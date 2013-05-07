@@ -68,7 +68,13 @@ function canvas() {
                 "rgba(255, 255, 255, 0.35)",
                 {mean: CANVAS_WIDTH/4, stdev: CANVAS_WIDTH/4});
 
-  //document.body.style.background = "url(" + canvas.toDataURL() + ")";
+  // We can't just blank the classnames inline with the rest of this function,
+  // as the browser needs a reflow before it'll apply a CSS transition.
+  // Fortunately the delay actually looks quite pleasant,
+  // which is why we wait for a whole second rather than just a single milli.
+  setTimeout(function() {
+        canvas.className = '';
+  }, 1000);
 }
 
 onload = canvas;

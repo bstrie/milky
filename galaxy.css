@@ -1,11 +1,16 @@
 body {
   background-color: #18171C;
-  height: 100%;
-  background-attachment: fixed !important;
-  background-repeat: repeat-y !important;
 }
+
 #canvas {
+  transition: opacity 3s linear;
+  -webkit-transition: opacity 3s linear; /* dammit webkit */
   position: fixed;
   top: 0;
   left: 0;
+}
+
+/* By removing this class we can trigger a CSS transition */
+.hidden {
+  opacity: 0;
 }
