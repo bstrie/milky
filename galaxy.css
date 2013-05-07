@@ -1,5 +1,8 @@
 body {
   background-color: #18171C;
+  color: #FFFFFF;
+  /* http://cssfontstack.com/ */
+  font-family: Calibri, Candara, Segoe, "Segoe UI", Optima, Arial, sans-serif;
 }
 
 #canvas {
@@ -8,9 +11,21 @@ body {
   position: fixed;
   top: 0;
   left: 0;
+  z-index: -1;
 }
 
 /* By removing this class we can trigger a CSS transition */
 .hidden {
   opacity: 0;
+}
+
+#content {
+  font-size: x-large;
+  line-height: 1.4em;
+  width: 30em;
+  margin-left: 5%;
+}
+
+h1 {
+  margin-top: 75px;
 }
