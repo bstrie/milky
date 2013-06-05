@@ -16,10 +16,10 @@ body {
 
 /* By removing this class we can trigger a CSS transition */
 .hidden {
+  opacity: 0;
 }
 
 #content {
-  opacity: 0;
   font-size: x-large;
   line-height: 1.4em;
   width: 30em;

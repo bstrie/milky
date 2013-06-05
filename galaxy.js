@@ -74,9 +74,9 @@ function canvas() {
   // as the browser needs a reflow before it'll apply a CSS transition.
   // Fortunately the delay actually looks quite pleasant,
   // which is why we wait for a whole second rather than just a single milli.
-//  setTimeout(function() {
-//        canvas.className = '';
-//  }, 1000);
+  setTimeout(function() {
+        canvas.className = '';
+  }, 1000);
 }
 
 onload = canvas;
