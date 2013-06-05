@@ -6,8 +6,8 @@ body {
 }
 
 #canvas {
-  transition: opacity 10s linear;
-  -webkit-transition: opacity 10s linear; /* dammit webkit */
+  transition: opacity 3s linear;
+  -webkit-transition: opacity 3s linear; /* dammit webkit */
   position: fixed;
   top: 0;
   left: 0;
