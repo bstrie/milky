@@ -1,6 +1,8 @@
 CANVAS_WIDTH = window.innerWidth;
 CANVAS_HEIGHT = window.innerHeight;
 
+GALACTIC_ECLIPTIC = 5*CANVAS_WIDTH/8;
+
 function circle(ctx, x_center, y_center, radius) {
   ctx.moveTo(x_center + radius, y_center);
   ctx.arc(x_center, y_center, radius, 0, Math.PI*2, true);
@@ -45,28 +47,28 @@ function canvas() {
                 CANVAS_HEIGHT * 100,
                 {min: 0.5, max: 0.8},
                 "rgba(255, 255, 255, 0.05)",
-                {mean: CANVAS_WIDTH/4, stdev: CANVAS_WIDTH/10});
+                {mean: GALACTIC_ECLIPTIC, stdev: CANVAS_WIDTH/10});
 
   // background highlight band
   galactic_band(ctx,
                 CANVAS_HEIGHT * 25,
                 {min: 0.5, max: 0.8},
                 "rgba(255, 255, 255, 0.075)",
-                {mean: CANVAS_WIDTH/4, stdev: CANVAS_WIDTH/25});
+                {mean: GALACTIC_ECLIPTIC, stdev: CANVAS_WIDTH/25});
 
   // foreground band
   galactic_band(ctx,
                 CANVAS_HEIGHT * 10,
                 {min: 0.1, max: 1.1},
                 "rgba(255, 255, 255, 0.15)",
-                {mean: CANVAS_WIDTH/4, stdev: CANVAS_WIDTH/6});
+                {mean: GALACTIC_ECLIPTIC, stdev: CANVAS_WIDTH/6});
 
   // foreground highlight band
   galactic_band(ctx,
                 CANVAS_HEIGHT/3,
                 {min: 0.9, max: 1.5},
                 "rgba(255, 255, 255, 0.35)",
-                {mean: CANVAS_WIDTH/4, stdev: CANVAS_WIDTH/4});
+                {mean: GALACTIC_ECLIPTIC, stdev: CANVAS_WIDTH/4});
 
   // We can't just blank the classnames inline with the rest of this function,
   // as the browser needs a reflow before it'll apply a CSS transition.
