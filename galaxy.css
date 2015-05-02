@@ -1,17 +1,30 @@
+p, h1, h2 {
+  display: none;
+}
 body {
   background-color: #18171C;
   color: #FFFFFF;
   /* http://cssfontstack.com/ */
   font-family: Calibri, Candara, Segoe, "Segoe UI", Optima, Arial, sans-serif;
+  background-repeat: repeat-y;
+  background-attachment: fixed;
 }
 
-#canvas {
-  transition: opacity 10s linear;
-  -webkit-transition: opacity 10s linear; /* dammit webkit */
+#curtain {
   position: fixed;
   top: 0;
   left: 0;
   z-index: -1;
+  background-color: #18171C;
+  /*transition: opacity 10s linear;
+  -webkit-transition: opacity 10s linear; *//* dammit webkit */
+}
+
+#canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -2;
 }
 
 /* By removing this class we can trigger a CSS transition */
