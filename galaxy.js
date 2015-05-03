@@ -1,8 +1,3 @@
-function draw_circle(ctx, x_center, y_center, radius) {
-  ctx.moveTo(x_center + radius, y_center);
-  ctx.arc(x_center, y_center, radius, 0, Math.PI*2, true);
-}
-
 function gen_rand_linear(lower, upper) {
   return lower + (upper - lower) * Math.random();
 }
@@ -16,30 +11,17 @@ function gen_rand_normal(stdev, mean) {
   return sum;
 }
 
-function draw_galactic_band(ctx, star_count, star_radius, star_color, band_height, band_width, guidepoints) {
-  ctx.beginPath();
-
-  for (var i=0; i<star_count; i++) {
-    var circle_y = gen_rand_linear(band_height.min, band_height.max);
-    var circle_x = gen_rand_normal(band_width.stdev, band_width.mean) +
-      get_x_coord_at_y_coord(guidepoints, circle_y) - band_width.mean;
-    draw_circle(ctx,
-      circle_x,
-      circle_y,
-      gen_rand_linear(star_radius.min, star_radius.max));
-  }
-
-  ctx.fillStyle = star_color;
-  ctx.fill();
+function midpoint(p1, p2) {
+  return Math.abs(p1 - p2) / 2 + Math.min(p1, p2);
 }
 
+// Given an initial array of two points, this function recursively bisects
+// the those points a number of times controlled by the depth parameter.
+// The exact point of bisection is chosen randomly, though the randomness
+// will reduce along with depth.
 function bend_line(points, start, wiggle_distance_x, wiggle_distance_y, depth) {
   if (depth === 0) {
     return;
-  }
-
-  function midpoint(p1, p2) {
-    return Math.abs(p1 - p2) / 2 + Math.min(p1, p2);
   }
 
   var midpoint_x = midpoint(points[start].x, points[start+1].x);
@@ -53,7 +35,7 @@ function bend_line(points, start, wiggle_distance_x, wiggle_distance_y, depth) {
     new_y = Math.round(gen_rand_normal(wiggle_distance_y, midpoint_y));
   } while (new_y < points[start].y || new_y > points[start+1].y)  // keep it from wiggling too much
 
-  // Now, for both lines created by our new point, make sure that the
+  // Now, for both lines created by our new point, we must make sure that the
   // vertical projection is greater than the horizontal projection so that
   // for each pixel in the y coordinate along the idealized line there exists
   // exactly one pixel along the x coordinate. This simplifies our
@@ -67,7 +49,8 @@ function bend_line(points, start, wiggle_distance_x, wiggle_distance_y, depth) {
 
   points.splice(start+1, 0, {x: new_x, y: new_y});
 
-  bend_line(points, start+1, wiggle_distance_x / 2, wiggle_distance_y / 2, depth - 1);  // hilarious
+  // Recursively bisect the "lower" points first, so as not to confuse the array indices.
+  bend_line(points, start+1, wiggle_distance_x / 2, wiggle_distance_y / 2, depth - 1);
   bend_line(points, start, wiggle_distance_x / 2, wiggle_distance_y / 2, depth - 1);
 }
 
@@ -79,7 +62,7 @@ function get_x_coord_at_y_coord(guidepoints, y) {
   // possible points beforehand and stuff them in an array and do a lookup.
   // A compromise would be to generate all stars beforehand, sort them by
   // their x coord, then run through the array of guidepoints exactly once.
-  // Maybe I should just stop worrying about it.
+  // Maybe I should just stop worrying about it...
   for (var i=1; i<guidepoints.length; i++) {
     if (guidepoints[i].y > y) {
       var x0 = guidepoints[i-1].x;
@@ -101,11 +84,34 @@ function get_x_coord_at_y_coord(guidepoints, y) {
   }
 }
 
-function draw_galactic_plane() {
-  var canvas_width = window.innerWidth;
-  var canvas_height = window.innerHeight;
+function draw_circle(ctx, x_center, y_center, radius) {
+  ctx.moveTo(x_center + radius, y_center);
+  ctx.arc(x_center, y_center, radius, 0, Math.PI*2, true);
+}
 
-  var galactic_ecliptic = 5*canvas_width/8;
+function draw_galactic_band(ctx, star_count, star_radius, star_color, band_height, band_width, guidepoints) {
+  ctx.beginPath();
+
+  for (var i=0; i<star_count; i++) {
+    var circle_y = gen_rand_linear(band_height.min, band_height.max);
+    var circle_x = gen_rand_normal(band_width.stdev, band_width.mean) +
+      get_x_coord_at_y_coord(guidepoints, circle_y) - band_width.mean;
+    draw_circle(ctx,
+      circle_x,
+      circle_y,
+      gen_rand_linear(star_radius.min, star_radius.max));
+  }
+
+  ctx.fillStyle = star_color;
+  ctx.fill();
+}
+
+function draw_galactic_plane() {
+  var galactic_ecliptic = midpoint(
+    document.getElementsByTagName('body')[0].offsetWidth,
+    document.getElementById('content').offsetWidth);
+  var canvas_width = galactic_ecliptic * 2;
+  var canvas_height = window.innerHeight;
 
   var canvas = document.getElementById('canvas');
   canvas.width = canvas_width;
@@ -132,7 +138,7 @@ function draw_galactic_plane() {
   }
 
   // Visualize Bresenham coordinates while debugging
-  if (true) {
+  if (false) {
     ctx.beginPath();
     ctx.moveTo(guidepoints[0].x, guidepoints[0].y);
     for (var i=1; i<canvas_height; i++) {
@@ -142,7 +148,7 @@ function draw_galactic_plane() {
     ctx.stroke();
   }
 
-  // background band
+  // Background band
   draw_galactic_band(ctx,
     canvas_height * 100,
     {min: 0.5, max: 0.8},
@@ -151,7 +157,7 @@ function draw_galactic_plane() {
     {mean: galactic_ecliptic, stdev: canvas_width/15},
     guidepoints);
 
-  // background highlight band
+  // Background highlight band
   draw_galactic_band(ctx,
     canvas_height * 25,
     {min: 0.5, max: 0.8},
@@ -160,7 +166,7 @@ function draw_galactic_plane() {
     {mean: galactic_ecliptic, stdev: canvas_width/25},
     guidepoints);
 
-  // foreground band
+  // Foreground band
   draw_galactic_band(ctx,
     canvas_height * 10,
     {min: 0.1, max: 1.1},
@@ -169,9 +175,9 @@ function draw_galactic_plane() {
     {mean: galactic_ecliptic, stdev: canvas_width/6},
     guidepoints);
 
-  // foreground highlight band
+  // Foreground highlight band
   draw_galactic_band(ctx,
-    canvas_height/3,
+    canvas_height / 3,
     {min: 0.9, max: 1.5},
     "rgba(255, 255, 255, 0.35)",
     {min: 0, max: canvas_height},
@@ -179,12 +185,12 @@ function draw_galactic_plane() {
     guidepoints);
 
   document.body.style.backgroundImage = "url(" + canvas.toDataURL() + ")";
-  // We can't just blank the classnames inline with the rest of this function,
+  // We can't just alter the class name inline with the rest of this function,
   // as the browser needs a reflow before it'll apply a CSS transition.
   // Fortunately the delay actually looks quite pleasant,
   // which is why we wait for a whole second rather than just a single milli.
   setTimeout(function() {
-    //document.getElementById("curtain").className='hidden';
+    document.getElementById("curtain").className='hidden';
   }, 1000);
 }
 

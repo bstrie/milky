@@ -1,45 +1,40 @@
-p, h1, h2 {
-  display: none;
-}
+/* Once generated, we stuff the canvas into the body's background image */
 body {
+  margin: 0;
   background-color: #18171C;
   color: #FFFFFF;
-  /* http://cssfontstack.com/ */
+  /* cssfontstack.com */
   font-family: Calibri, Candara, Segoe, "Segoe UI", Optima, Arial, sans-serif;
   background-repeat: repeat-y;
   background-attachment: fixed;
 }
 
-#curtain {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: -1;
-  background-color: #18171C;
-  /*transition: opacity 10s linear;
-  -webkit-transition: opacity 10s linear; *//* dammit webkit */
-}
-
 #canvas {
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: -2;
-}
-
-/* By removing this class we can trigger a CSS transition */
-.hidden {
-  opacity: 0;
+  display: none;
 }
 
 #content {
   font-size: x-large;
   line-height: 1.4em;
   width: 30em;
-  margin-left: 5%;
-  margin-bottom: 5%;
+  max-width: 30em;
+  margin: 5%;
+  padding: 10px;
 }
 
-h1 {
-  margin-top: 75px;
+/* Spans the full height and width of the page, to hide the galaxy popping in */
+#curtain {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: -1;
+  background-color: #18171C;
+  transition: opacity 2s linear;
+}
+
+/* We add this class to #curtain to trigger our tasteful galactic fade-in */
+.hidden {
+  opacity: 0;
 }
